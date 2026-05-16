@@ -40,14 +40,46 @@ export default async function LeaderboardPage() {
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-12">
-      <section className="mb-10">
-        <h1 className="text-3xl font-semibold tracking-tight mb-2">Mantle DeFi protocol risk</h1>
-        <p className="text-zinc-400 max-w-3xl">
-          Every score below is computed inside a TEE enclave and submitted on-chain. The published
-          model + the input data hash + the inference trace are all attested, so an agent
-          consulting MBG can prove the score it acted on.
+      <section className="mb-12">
+        <h1 className="text-4xl font-semibold tracking-tight mb-3 leading-tight">
+          Verifiable DeFi risk scoring<br />
+          <span className="text-zinc-400">for the agent era.</span>
+        </h1>
+        <p className="text-zinc-300 max-w-3xl leading-relaxed">
+          When an AI agent moves your money in DeFi, MBG is the only risk oracle where the agent
+          can <span className="text-zinc-100 font-medium">prove</span> it considered the risk.
+          Every score is signed inside an Intel TDX enclave and posted on-chain — so an agent that
+          consulted MBG carries an attestation hash <span className="text-zinc-100 font-medium">anyone</span> can verify.
         </p>
-        <div className="mt-4 text-xs text-zinc-500 mono">
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+          <div className="rounded-lg border border-zinc-800 p-4">
+            <div className="text-xs uppercase tracking-wide text-cyan-400 mb-2">for agents</div>
+            <div className="text-sm text-zinc-300 leading-relaxed">
+              Callable as a Byreal Skill (<span className="mono">mbg-cli</span>) or directly on-chain
+              via <span className="mono">RiskOracle.getRouteScore</span>. Agents that route user
+              funds can pre-check risk in a single view call before signing.
+            </div>
+          </div>
+          <div className="rounded-lg border border-zinc-800 p-4">
+            <div className="text-xs uppercase tracking-wide text-cyan-400 mb-2">verifiable end-to-end</div>
+            <div className="text-sm text-zinc-300 leading-relaxed">
+              The code, the inputs, the signing key — all attested inside the TEE. Any agent's
+              claim of "I checked the risk" comes with an attestation hash on-chain. You don't
+              trust us. You verify.
+            </div>
+          </div>
+          <div className="rounded-lg border border-zinc-800 p-4">
+            <div className="text-xs uppercase tracking-wide text-cyan-400 mb-2">mantle-native</div>
+            <div className="text-sm text-zinc-300 leading-relaxed">
+              We model what Mantle protocols actually depend on — mETH/cmETH depeg, fBTC bridge
+              surface, MI4 custody chain, sequencer assumptions, composition risk — that
+              multi-chain scorers don't.
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 text-xs text-zinc-500 mono">
           oracle: {ORACLE_ADDRESS} · {scored} / {entries.length} protocols scored
         </div>
       </section>

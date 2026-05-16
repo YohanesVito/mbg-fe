@@ -1,8 +1,10 @@
 # MBG — Mantle Bot Gate (Dashboard)
 
-> Next.js frontend for the **Mantle Bot Gate** — a TEE-attested on-chain risk oracle for Mantle DeFi agents.
+> **The only DeFi risk oracle where every score comes with a cryptographic receipt — so an AI agent that routes your money can't fake having considered the risk.**
 
-This repo contains only the dashboard. The smart contracts, scoring engine, TEE worker, and Byreal Skill live in the main repo: **[YohanesVito/mbg-mantle](https://github.com/YohanesVito/mbg-mantle)**.
+**Live:** https://mbg-fe.vercel.app
+
+This repo contains the dashboard. The smart contracts, scoring engine, TEE worker, and Byreal Skill live in the main repo: **[YohanesVito/mbg-mantle](https://github.com/YohanesVito/mbg-mantle)**.
 
 ## What this app does
 

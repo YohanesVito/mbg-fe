@@ -55,6 +55,9 @@ export interface Protocol {
   audits: AuditRecord[]
   addresses?: {
     main?: `0x${string}`
+    /** Admin / owner / governance contract on Mantle Mainnet. Used by
+     *  the upstream centralization-risk component to detect EOA vs
+     *  contract control. The dashboard doesn't read this directly. */
     admin?: `0x${string}`
     aaveOracle?: `0x${string}`
     poolDataProvider?: `0x${string}`

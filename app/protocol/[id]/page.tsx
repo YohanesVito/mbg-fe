@@ -130,6 +130,79 @@ export default async function ProtocolDetail({
         </>
       )}
 
+      {protocol.mantleExposure ? (
+        <section className="mb-8">
+          <h2 className="text-sm uppercase tracking-wide text-zinc-500 mb-3">
+            mantle-native exposure
+          </h2>
+          <div className="rounded-lg border border-zinc-800 px-5 py-4 text-sm space-y-3">
+            {protocol.mantleExposure.lst && protocol.mantleExposure.lst.length > 0 ? (
+              <div className="flex items-baseline gap-3">
+                <span className="text-xs uppercase tracking-wide text-zinc-500 w-20">LST</span>
+                <div className="flex gap-1.5 flex-wrap">
+                  {protocol.mantleExposure.lst.map((a) => (
+                    <span
+                      key={a}
+                      className="text-cyan-200 bg-cyan-950/40 border border-cyan-900/60 px-2 py-0.5 rounded text-xs mono"
+                    >
+                      {a}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+            {protocol.mantleExposure.bridge && protocol.mantleExposure.bridge.length > 0 ? (
+              <div className="flex items-baseline gap-3">
+                <span className="text-xs uppercase tracking-wide text-zinc-500 w-20">bridge</span>
+                <div className="flex gap-1.5 flex-wrap">
+                  {protocol.mantleExposure.bridge.map((a) => (
+                    <span
+                      key={a}
+                      className="text-amber-200 bg-amber-950/40 border border-amber-900/60 px-2 py-0.5 rounded text-xs mono"
+                    >
+                      {a}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+            {protocol.mantleExposure.stable && protocol.mantleExposure.stable.length > 0 ? (
+              <div className="flex items-baseline gap-3">
+                <span className="text-xs uppercase tracking-wide text-zinc-500 w-20">stable</span>
+                <div className="flex gap-1.5 flex-wrap">
+                  {protocol.mantleExposure.stable.map((a) => (
+                    <span
+                      key={a}
+                      className="text-emerald-200 bg-emerald-950/40 border border-emerald-900/60 px-2 py-0.5 rounded text-xs mono"
+                    >
+                      {a}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+            {!protocol.mantleExposure.lst?.length &&
+            !protocol.mantleExposure.bridge?.length &&
+            !protocol.mantleExposure.stable?.length ? (
+              <div className="text-zinc-400 text-xs">
+                No transitive LST / bridge / stable exposure on Mantle.
+              </div>
+            ) : null}
+            {protocol.mantleExposure.notes ? (
+              <div className="text-zinc-500 text-xs pt-1 border-t border-zinc-900 mt-3">
+                {protocol.mantleExposure.notes}
+              </div>
+            ) : null}
+          </div>
+          <p className="text-xs text-zinc-600 mt-2">
+            This is the <span className="text-zinc-400">Mantle-native composition</span> component
+            — multi-chain risk scorers don't model these dependencies. It's already factored into
+            the aggregate score above (15% weight); breakdown above shows the 4 on-chain components,
+            this section shows the 5th.
+          </p>
+        </section>
+      ) : null}
+
       <section className="mb-8">
         <h2 className="text-sm uppercase tracking-wide text-zinc-500 mb-3">audits</h2>
         {protocol.audits.length === 0 ? (

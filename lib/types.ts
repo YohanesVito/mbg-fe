@@ -43,6 +43,29 @@ export type TvlMetric = 'mantle-chain' | 'total'
  */
 export type OraclePattern = 'aave-v3' | 'aave-v2' | 'custom'
 
+/**
+ * Mantle-native dependency exposure: what the protocol *transitively*
+ * inherits risk from. Multi-chain scorers don't model these; we do.
+ *
+ *  - `lst`: liquid staking tokens. Accepting mETH as collateral or holding
+ *    cmETH in a pool inherits the LST's depeg / redemption-rate risk.
+ *  - `bridge`: tokenized assets bridged from another chain. Inherits the
+ *    bridge's custody / attestation-chain risk.
+ *  - `stable`: synthetic / pegged dollars. Inherits the stable's
+ *    collateral / oracle / peg risk.
+ */
+export type LstAsset = 'mETH' | 'cmETH'
+export type BridgeAsset = 'fBTC'
+export type StableAsset = 'USDe' | 'USDtb' | 'USDY'
+
+export interface MantleExposure {
+  lst?: LstAsset[]
+  bridge?: BridgeAsset[]
+  stable?: StableAsset[]
+  /** Free-form note explaining the nature of the exposure */
+  notes?: string
+}
+
 export interface Protocol {
   id: string
   name: string
@@ -52,12 +75,14 @@ export interface Protocol {
   deployedAt?: string
   tvlMetric?: TvlMetric
   oraclePattern?: OraclePattern
+  mantleExposure?: MantleExposure
   audits: AuditRecord[]
   addresses?: {
     main?: `0x${string}`
     /** Admin / owner / governance contract on Mantle Mainnet. Used by
-     *  the upstream centralization-risk component to detect EOA vs
-     *  contract control. The dashboard doesn't read this directly. */
+     *  centralization-risk to read whether control is an EOA, a contract,
+     *  or renounced. Omit when unknown; the component falls back to a v0
+     *  placeholder. */
     admin?: `0x${string}`
     aaveOracle?: `0x${string}`
     poolDataProvider?: `0x${string}`
@@ -76,6 +101,9 @@ export interface ProtocolComponents {
   liquidity: ComponentScore
   centralization: ComponentScore
   oracle: ComponentScore
+  /** Mantle-native composition risk — transitive exposure to LSTs, bridges,
+   *  synthetic stables. Not modeled by global multi-chain scorers. */
+  mantleExposure: ComponentScore
 }
 
 export interface ProtocolScore {

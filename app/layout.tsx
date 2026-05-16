@@ -23,6 +23,9 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
               <Link href="/route" className="text-zinc-400 hover:text-zinc-100 transition-colors">
                 route checker
               </Link>
+              <Link href="/skill" className="text-zinc-400 hover:text-zinc-100 transition-colors">
+                install skill
+              </Link>
             </nav>
             <span className="text-zinc-500 text-sm ml-auto">
               pre-trade risk gate for Mantle agents

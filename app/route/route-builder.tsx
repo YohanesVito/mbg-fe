@@ -23,6 +23,45 @@ interface ActionRow {
   amount: string
 }
 
+export interface RoutePreset {
+  id: string
+  title: string
+  description: string
+  actions: ActionRow[]
+}
+
+function plainVerdict(scaled: number, allProtocolsScored: boolean): {
+  headline: string
+  tone: 'good' | 'mid' | 'bad'
+} {
+  if (!allProtocolsScored) {
+    return {
+      headline:
+        "At least one protocol in this route has no MBG score yet — an agent should treat this as a warning and refuse to route without explicit user override.",
+      tone: 'bad',
+    }
+  }
+  if (scaled >= 700) {
+    return {
+      headline:
+        'Strong route. An agent can sign this with confidence — all legs are well-scored, composition risk is contained.',
+      tone: 'good',
+    }
+  }
+  if (scaled >= 500) {
+    return {
+      headline:
+        'Acceptable route but not optimal. The aggregate is decent; see the safer alternatives below for protocols that score higher in the same category.',
+      tone: 'mid',
+    }
+  }
+  return {
+    headline:
+      "Risky route. An agent consulting MBG should refuse to sign this without explicit user override, or substitute one of the safer alternatives below.",
+    tone: 'bad',
+  }
+}
+
 function formatScore(scaled: number): string {
   return (scaled / 100).toFixed(2)
 }
@@ -34,13 +73,26 @@ function scoreColor(scaled: number): string {
   return 'text-red-400'
 }
 
-export function RouteBuilder({protocols}: {protocols: ProtocolOption[]}) {
+export function RouteBuilder({
+  protocols,
+  presets = [],
+}: {
+  protocols: ProtocolOption[]
+  presets?: RoutePreset[]
+}) {
   const defaultId = protocols[0]?.id ?? ''
   const [rows, setRows] = useState<ActionRow[]>([
     {protocolId: defaultId, actionType: 1, amount: '1000'},
   ])
   const [result, setResult] = useState<RouteScoreResult | null>(null)
   const [pending, startTransition] = useTransition()
+  const [activePreset, setActivePreset] = useState<string | null>(null)
+
+  function loadPreset(p: RoutePreset) {
+    setRows(p.actions.map((a) => ({...a})))
+    setResult(null)
+    setActivePreset(p.id)
+  }
 
   function addRow() {
     setRows((r) => [...r, {protocolId: defaultId, actionType: 0, amount: '0'}])
@@ -63,6 +115,32 @@ export function RouteBuilder({protocols}: {protocols: ProtocolOption[]}) {
 
   return (
     <div className="space-y-8">
+      {presets.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {presets.map((p) => {
+            const active = activePreset === p.id
+            return (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => loadPreset(p)}
+                className={`text-left rounded-lg border px-4 py-3 transition-colors ${
+                  active
+                    ? 'border-cyan-700 bg-cyan-950/30'
+                    : 'border-zinc-800 hover:border-zinc-700 bg-zinc-950'
+                }`}
+              >
+                <div className="text-sm font-medium text-zinc-100 mb-1">{p.title}</div>
+                <div className="text-xs text-zinc-500 leading-snug">{p.description}</div>
+                <div className="text-xs text-zinc-600 mt-2 mono">
+                  {p.actions.length} leg{p.actions.length !== 1 ? 's' : ''}
+                </div>
+              </button>
+            )
+          })}
+        </div>
+      ) : null}
+
       <div className="rounded-lg border border-zinc-800 px-5 py-4">
         <div className="text-xs uppercase tracking-wide text-zinc-500 mb-3">build the route</div>
         <div className="space-y-2">
@@ -128,9 +206,9 @@ export function RouteBuilder({protocols}: {protocols: ProtocolOption[]}) {
           </button>
         </div>
         <p className="text-xs text-zinc-600 mt-3">
-          Action type and amount are metadata passed to the on-chain `getRouteScore` call.
-          Composition risk is computed from the set of distinct protocols, not from individual
-          action types — that's v1.
+          Each leg = one DeFi move the agent would execute. <span className="text-zinc-500">Action type
+          + amount are metadata for the agent's bookkeeping;</span> MBG scores by which protocols you
+          touch and how they compose.
         </p>
       </div>
 
@@ -150,15 +228,29 @@ function ResultPanel({result}: {result: RouteScoreResult}) {
     )
   }
 
+  const verdict = plainVerdict(result.aggregate, result.allProtocolsScored)
+  const verdictBg =
+    verdict.tone === 'good'
+      ? 'border-emerald-900 bg-emerald-950/20'
+      : verdict.tone === 'mid'
+        ? 'border-amber-900 bg-amber-950/20'
+        : 'border-red-900 bg-red-950/20'
+  const verdictText =
+    verdict.tone === 'good' ? 'text-emerald-200' : verdict.tone === 'mid' ? 'text-amber-200' : 'text-red-200'
+
   return (
     <div className="rounded-lg border border-zinc-800 px-5 py-5">
       <div className="text-xs uppercase tracking-wide text-zinc-500 mb-3">on-chain result</div>
 
-      <div className="flex items-baseline gap-3 mb-5">
+      <div className="flex items-baseline gap-3 mb-3">
         <span className={`text-4xl font-semibold tabular-nums ${scoreColor(result.aggregate)}`}>
           {formatScore(result.aggregate)}
         </span>
         <span className="text-zinc-500">/ 10 route score</span>
+      </div>
+
+      <div className={`rounded border ${verdictBg} px-4 py-3 mb-5`}>
+        <div className={`text-sm leading-relaxed ${verdictText}`}>{verdict.headline}</div>
       </div>
 
       <div className="grid grid-cols-3 gap-4 text-sm mb-5">

@@ -185,6 +185,45 @@ function ResultPanel({result}: {result: RouteScoreResult}) {
           Same logic an agent calls on-chain before signing.
         </div>
       </div>
+
+      {result.alternatives && result.alternatives.length > 0 ? (
+        <div className="mt-6 border-t border-zinc-900 pt-5">
+          <div className="text-xs uppercase tracking-wide text-zinc-500 mb-3">
+            safer alternatives MBG would recommend
+          </div>
+          <div className="space-y-2">
+            {result.alternatives.map((alt, i) => (
+              <div
+                key={i}
+                className="flex items-baseline justify-between gap-3 rounded border border-zinc-800 px-4 py-3"
+              >
+                <div className="min-w-0">
+                  <div className="text-sm">
+                    <span className="text-zinc-400">leg {alt.legIndex + 1}:</span>{' '}
+                    <span className="text-zinc-200">{alt.description}</span>
+                  </div>
+                  <div className="text-xs text-zinc-500 mt-0.5">
+                    Same category, currently scoring higher in the leaderboard.
+                  </div>
+                </div>
+                <div className="text-right shrink-0">
+                  <div className="text-emerald-400 font-medium tabular-nums">
+                    {formatScore(alt.newAggregate)}
+                  </div>
+                  <div className="text-xs text-emerald-500 mono">
+                    +{formatScore(alt.improvement)}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-zinc-600 mt-3">
+            Each alternative swaps a single leg for the highest-scoring same-category protocol that's
+            not already in the route, then re-scores on-chain via <span className="mono">getRouteScore</span>.
+            Shown only when the swap actually improves the aggregate.
+          </p>
+        </div>
+      ) : null}
     </div>
   )
 }

@@ -45,33 +45,39 @@ export function placeholderProtocolAddress(id: string): `0x${string}` {
 
 export async function fetchProtocolScore(id: string): Promise<OnChainScore | null> {
   const addr = placeholderProtocolAddress(id)
-  const data = await client.readContract({
-    address: ORACLE_ADDRESS,
-    abi: ORACLE_ABI,
-    functionName: 'getProtocolScore',
-    args: [addr],
-  })
-  if (data.timestamp === 0n) return null
-  return {
-    aggregate: data.aggregate,
-    contractRisk: data.contractRisk,
-    liquidityRisk: data.liquidityRisk,
-    centralizationRisk: data.centralizationRisk,
-    oracleRisk: data.oracleRisk,
-    timestamp: data.timestamp,
-    traceHash: data.traceHash,
-    signer: data.signer,
+  try {
+    const data = await client.readContract({
+      address: ORACLE_ADDRESS,
+      abi: ORACLE_ABI,
+      functionName: 'getProtocolScore',
+      args: [addr],
+    })
+    if (data.timestamp === 0n) return null
+    return {
+      aggregate: data.aggregate,
+      contractRisk: data.contractRisk,
+      liquidityRisk: data.liquidityRisk,
+      centralizationRisk: data.centralizationRisk,
+      oracleRisk: data.oracleRisk,
+      timestamp: data.timestamp,
+      traceHash: data.traceHash,
+      signer: data.signer,
+    }
+  } catch {
+    return null
   }
 }
 
 export async function fetchAllEntries(): Promise<ProtocolEntry[]> {
-  return Promise.all(
-    PROTOCOLS.map(async (protocol) => ({
+  const out: ProtocolEntry[] = []
+  for (const protocol of PROTOCOLS) {
+    out.push({
       protocol,
       placeholderAddress: placeholderProtocolAddress(protocol.id),
       score: await fetchProtocolScore(protocol.id),
-    })),
-  )
+    })
+  }
+  return out
 }
 
 export function formatScore(scaled: number): string {

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://eips.ethereum.org/EIPS/eip-8004",
+  "schemaVersion": "1.0",
+  "name": "MBG — Mantle Bot Gate",
+  "description": "TEE-attested on-chain risk scoring for Mantle DeFi. Agents that route user funds consult MBG before signing, and carry an attestation hash any user can verify on-chain.",
+  "url": "https://mbg-fe.vercel.app",
+  "endpoints": {
+    "web": "https://mbg-fe.vercel.app",
+    "docs": "https://github.com/YohanesVito/mbg-mantle#readme",
+    "skill": "https://mbg-fe.vercel.app/skill",
+    "github": "https://github.com/YohanesVito/mbg-mantle",
+    "dashboard": "https://mbg-fe.vercel.app"
+  },
+  "capabilities": [
+    {
+      "id": "list-protocols",
+      "description": "Enumerate every Mantle DeFi protocol MBG scores.",
+      "transport": "cli",
+      "command": "mbg-cli list-protocols"
+    },
+    {
+      "id": "score-protocol",
+      "description": "Get current TEE-attested risk score (5 components + attestation hash) for one Mantle protocol.",
+      "transport": "cli",
+      "command": "mbg-cli score-protocol <id>"
+    },
+    {
+      "id": "score-route",
+      "description": "Pre-trade risk scoring for a multi-leg DeFi route. Single on-chain view call. Returns aggregate + composition penalty + per-leg breakdown.",
+      "transport": "cli",
+      "command": "mbg-cli score-route '<actions-json>'"
+    },
+    {
+      "id": "getProtocolScore",
+      "description": "Direct on-chain read: any contract can call RiskOracle.getProtocolScore(address) and verify the attestation hash.",
+      "transport": "evm",
+      "contract": "0x58519569c3D5C9a13dC0e8e7B6d2E123E2f0ae45",
+      "method": "getProtocolScore(address)"
+    },
+    {
+      "id": "getRouteScore",
+      "description": "Direct on-chain read: any contract can compose a route and get the aggregate score in one view call.",
+      "transport": "evm",
+      "contract": "0x58519569c3D5C9a13dC0e8e7B6d2E123E2f0ae45",
+      "method": "getRouteScore((address,uint8,uint128)[])"
+    }
+  ],
+  "attestation": {
+    "method": "phala-dstack-tdx",
+    "status": "v0-attested-eoa-fallback",
+    "signerAddress": "0x742812a2Ff08b76f968dffA7ca6892A428cAeBb1",
+    "migrationTarget": "phala-cloud-tdx",
+    "registries": {
+      "identity": "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
+      "reputation": "0x8004BAa17C55a88189AE136b182e5fdA19dE9b63",
+      "validation": "0x8004Cb1BF31DAf7788923b405b754f57acEB4272"
+    }
+  },
+  "paymentAddress": "0x742812a2Ff08b76f968dffA7ca6892A428cAeBb1",
+  "license": "MIT",
+  "repository": "https://github.com/YohanesVito/mbg-mantle"
+}

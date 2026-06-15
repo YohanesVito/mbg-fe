@@ -34,8 +34,19 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         </header>
         {children}
         <footer className="border-t border-zinc-900/80 mt-24">
-          <div className="mx-auto max-w-6xl px-6 py-5 text-xs text-zinc-500 flex justify-between">
-            <span>MBG v0 — local Anvil demo. Scores are TEE-attested via Phala dstack in production.</span>
+          <div className="mx-auto max-w-6xl px-6 py-5 text-xs text-zinc-500 flex justify-between gap-6">
+            <span>
+              MBG v0 — live on Mantle Mainnet. Skill on npm:{' '}
+              <a
+                href="https://www.npmjs.com/package/mbg-score"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mono text-cyan-400 hover:text-cyan-300"
+              >
+                mbg-score
+              </a>
+              . ERC-8004 agentId 130. v1 attestation migrates to full Phala TDX post-hackathon.
+            </span>
             <span className="mono">scoring: @mbg/be · attestation: @mbg/tee-worker · oracle: RiskOracle.sol</span>
           </div>
         </footer>

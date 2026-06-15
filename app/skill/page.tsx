@@ -23,48 +23,54 @@ export default function SkillPage() {
         </h1>
         <p className="text-zinc-300 leading-relaxed max-w-2xl">
           MBG ships as an{' '}
-          <span className="text-zinc-100 font-medium">OpenClaw-compatible Skill</span>. Any agent
-          framework that speaks the Byreal Skills CLI — RealClaw, custom OpenClaw agents — can
-          install <span className="mono">mbg-cli</span> in one command and gain TEE-attested
-          on-chain risk scoring before it routes a user's funds.
+          <span className="text-zinc-100 font-medium">OpenClaw-compatible Skill</span>, published
+          to npm as{' '}
+          <a
+            href="https://www.npmjs.com/package/mbg-score"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mono text-cyan-400 hover:text-cyan-300"
+          >
+            mbg-score
+          </a>
+          . Any Node 18+ agent runtime — RealClaw, Brahma, Hey Anon, Giza ARMA, custom OpenClaw
+          agents, or your own — can install <span className="mono">mbg-cli</span> in one command
+          and gain TEE-attested on-chain risk scoring before it routes a user&apos;s funds. Defaults
+          read live Mantle Mainnet; zero config required.
         </p>
       </section>
 
       <section className="mb-10">
         <h2 className="text-xs uppercase tracking-wide text-zinc-500 mb-3">
-          install (OpenClaw Skills CLI)
+          install (npm — works in any Node 18+ runtime)
         </h2>
-        <CodeBlock>{`# Add the MBG Skill to your OpenClaw agent
-npx skills add YohanesVito/mbg-mantle/skills/mbg
+        <CodeBlock>{`# Install globally
+npm install -g mbg-score
+# or
+bun add -g mbg-score
 
-# Verify it loaded
-mbg-cli skill          # prints full SKILL.md
-mbg-cli catalog list   # lists every capability`}</CodeBlock>
+# Verify it loaded (no env vars needed — defaults to Mantle Mainnet)
+mbg-cli skill              # prints full SKILL.md
+mbg-cli list-protocols     # 13 scored protocols
+mbg-cli score-protocol aave-v3-mantle`}</CodeBlock>
         <p className="text-xs text-zinc-500 mt-3">
-          Once installed, the agent's LLM sees the Skill description and routes any
-          "is this protocol safe?" / "what's the risk of this route?" question through
-          <span className="mono"> mbg-cli</span>. No manual prompting required.
+          Real, live Mantle Mainnet score (TEE-attested signer + on-chain trace hash) returned in
+          one command. Override <span className="mono">MBG_RPC_URL</span> /{' '}
+          <span className="mono">MBG_CHAIN_ID</span> /{' '}
+          <span className="mono">MBG_ORACLE_ADDRESS</span> for local Anvil or Sepolia.
         </p>
       </section>
 
       <section className="mb-10">
         <h2 className="text-xs uppercase tracking-wide text-zinc-500 mb-3">
-          install (local clone, hackathon-style)
+          install (OpenClaw Skills CLI, for Byreal-runtime agents)
         </h2>
-        <CodeBlock>{`# Clone the upstream backend repo
-git clone https://github.com/YohanesVito/mbg-mantle.git
-cd mbg-mantle/skills/mbg
+        <CodeBlock>{`# Add directly via OpenClaw Skills CLI
+npx skills add mbg-score
 
-# Install deps + link the binary
-bun install
-bun link
-
-# Now mbg-cli is on your PATH
-mbg-cli list-protocols`}</CodeBlock>
-        <p className="text-xs text-zinc-500 mt-3">
-          Useful while the Skill isn't published to npm. The same{' '}
-          <span className="mono">mbg-cli</span> binary, just linked from source.
-        </p>
+# Once added, the agent's LLM auto-discovers the Skill from SKILL.md
+# and routes any "is this safe?" / "what's the risk of this route?"
+# question through mbg-cli — no manual prompting.`}</CodeBlock>
       </section>
 
       <section className="mb-10">
@@ -157,6 +163,17 @@ mbg-cli score-route '[
           links
         </h2>
         <div className="rounded-lg border border-zinc-800 px-5 py-4 text-sm space-y-2">
+          <div className="flex gap-3">
+            <span className="text-zinc-500 w-32">npm package</span>
+            <a
+              href="https://www.npmjs.com/package/mbg-score"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mono text-cyan-400 hover:text-cyan-300 break-all"
+            >
+              npmjs.com/package/mbg-score
+            </a>
+          </div>
           <div className="flex gap-3">
             <span className="text-zinc-500 w-32">Skill source</span>
             <a

@@ -2,8 +2,18 @@
   "$schema": "https://eips.ethereum.org/EIPS/eip-8004",
   "schemaVersion": "1.0",
   "name": "MBG — Mantle Bot Gate",
-  "description": "TEE-attested on-chain risk scoring for Mantle DeFi. Agents that route user funds consult MBG before signing, and carry an attestation hash any user can verify on-chain.",
+  "description": "Autonomous risk-scoring agent for Mantle DeFi. TEE-attested, on-chain identity registered (ERC-8004 agentId 130). Trading agents on Mantle consult MBG before signing on user behalf and carry an attestation hash any user can verify on-chain.",
   "url": "https://mbg-fe.vercel.app",
+  "agentType": "risk-scoring",
+  "network": {
+    "chain": "mantle-mainnet",
+    "chainId": 5000
+  },
+  "identity": {
+    "registry": "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
+    "agentId": 130,
+    "mintTx": "0x610d925e67364b350ba4810b9174485212b8498e4eaa68f03a99d8c7ad6ac668"
+  },
   "endpoints": {
     "web": "https://mbg-fe.vercel.app",
     "docs": "https://github.com/YohanesVito/mbg-mantle#readme",
@@ -34,14 +44,14 @@
       "id": "getProtocolScore",
       "description": "Direct on-chain read: any contract can call RiskOracle.getProtocolScore(address) and verify the attestation hash.",
       "transport": "evm",
-      "contract": "0x58519569c3D5C9a13dC0e8e7B6d2E123E2f0ae45",
+      "contract": "0x998ceb700e57f535873d189a6b1b7e2aa8c594eb",
       "method": "getProtocolScore(address)"
     },
     {
       "id": "getRouteScore",
       "description": "Direct on-chain read: any contract can compose a route and get the aggregate score in one view call.",
       "transport": "evm",
-      "contract": "0x58519569c3D5C9a13dC0e8e7B6d2E123E2f0ae45",
+      "contract": "0x998ceb700e57f535873d189a6b1b7e2aa8c594eb",
       "method": "getRouteScore((address,uint8,uint128)[])"
     }
   ],
@@ -50,6 +60,7 @@
     "status": "v0-attested-eoa-fallback",
     "signerAddress": "0x742812a2Ff08b76f968dffA7ca6892A428cAeBb1",
     "migrationTarget": "phala-cloud-tdx",
+    "verifiedSource": "https://mantlescan.xyz/address/0x998ceb700e57f535873d189a6b1b7e2aa8c594eb#code",
     "registries": {
       "identity": "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
       "reputation": "0x8004BAa17C55a88189AE136b182e5fdA19dE9b63",
